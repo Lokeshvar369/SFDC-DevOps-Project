@@ -3,6 +3,7 @@
     <types>
         <members>Customer_Feedback__c</members>
         <members>Devops_Demo__c</members>
+        <members>Login_Form__c</members>
         <name>CustomObject</name>
     </types>
     <version>65.0</version>

@@ -143,22 +143,23 @@
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
+    <description>Custom object to store and manage customer feedback records including rating, status and platform details</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableLicensing>false</enableLicensing>
-    <enableReports>true</enableReports>
+    <enableReports>false</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-    <label>Devops Demo</label>
+    <label>Customer Feedback</label>
     <nameField>
-        <label>Devops Demo Name</label>
+        <label>Customer Feedback Name</label>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Devops Demos</pluralLabel>
+    <pluralLabel>Customer Feedbacks</pluralLabel>
     <searchLayouts></searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

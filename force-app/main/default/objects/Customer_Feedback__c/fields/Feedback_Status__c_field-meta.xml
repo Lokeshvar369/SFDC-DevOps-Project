@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Deployment_Environment__c</fullName>
-    <label>Deployment Environment</label>
+    <fullName>Feedback_Status__c</fullName>
+    <description>Indicates the current status of the customer feedback record. Values include New, In Review, and Closed</description>
+    <label>Feedback Status</label>
     <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
@@ -10,19 +11,19 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>DEV</fullName>
+                <fullName>New</fullName>
                 <default>false</default>
-                <label>DEV</label>
+                <label>New</label>
             </value>
             <value>
-                <fullName>QA</fullName>
+                <fullName>In Review</fullName>
                 <default>false</default>
-                <label>QA</label>
+                <label>In Review</label>
             </value>
             <value>
-                <fullName>Production</fullName>
+                <fullName>Closed</fullName>
                 <default>false</default>
-                <label>Production</label>
+                <label>Closed</label>
             </value>
         </valueSetDefinition>
     </valueSet>

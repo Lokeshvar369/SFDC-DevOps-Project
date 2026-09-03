@@ -151,6 +151,9 @@ private class DevOpsAccountDmlServiceTest {
             Limits.getQueries()
         );
 
+        List<Account> accounts =
+            DevOpsAccountDmlService.createAccounts(accountNames);
+
         System.debug(
             'DML statements after: ' +
             Limits.getDmlStatements()
@@ -161,8 +164,17 @@ private class DevOpsAccountDmlServiceTest {
             Limits.getQueries()
         );
 
-        List<Account> accounts =
-            DevOpsAccountDmlService.createAccounts(accountNames);
+        System.assertEquals(
+            1,
+            Limits.getDmlStatements(),
+            'Bulk creation should use one DML statement'
+        );
+
+        System.assertEquals(
+            0,
+            Limits.getQueries(),
+            'Bulk creation should not use SOQL'
+        );
 
         Test.stopTest();
 

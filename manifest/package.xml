@@ -1,10 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
     <types>
         <members>Customer_Feedback__c</members>
-        <members>Detail__c</members>
-        <members>Login_Form__c</members>
         <name>CustomObject</name>
     </types>
+
+    <types>
+        <members>DevOpsAccountService</members>
+        <members>DevOpsAccountServiceTest</members>
+        <members>DevOpsAccountDmlService</members>
+        <members>DevOpsAccountDmlServiceTest</members>
+        <members>DevOpsDemoService</members>
+        <members>DevOpsDemoServiceTest</members>
+        <name>ApexClass</name>
+    </types>
+
     <version>65.0</version>
 </Package>

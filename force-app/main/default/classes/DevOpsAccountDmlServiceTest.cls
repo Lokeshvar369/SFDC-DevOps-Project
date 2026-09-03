@@ -1,246 +1,207 @@
 @IsTest
 private class DevOpsAccountDmlServiceTest {
+  @IsTest
+  static void testCreateAccount() {
+    Test.startTest();
 
-    @IsTest
-    static void testCreateAccount() {
+    Account acc = DevOpsAccountDmlService.createAccount('Gearset Demo Account');
 
-        Test.startTest();
+    Test.stopTest();
 
-        Account acc =
-            DevOpsAccountDmlService.createAccount(
-                'Gearset Demo Account'
-            );
+    System.assertNotEquals(null, acc.Id);
 
-        Test.stopTest();
+    System.assertEquals('Gearset Demo Account', acc.Name);
+  }
 
-        System.assertNotEquals(
-            null,
-            acc.Id
-        );
+  @IsTest
+  static void testUpdateAccount() {
+    Account acc = new Account(Name = 'Original Account Name');
 
-        System.assertEquals(
-            'Gearset Demo Account',
-            acc.Name
-        );
+    insert acc;
+
+    Test.startTest();
+
+    Account updatedAccount = DevOpsAccountDmlService.updateAccount(
+      acc.Id,
+      'Updated Account Name'
+    );
+
+    Test.stopTest();
+
+    System.assertEquals('Updated Account Name', updatedAccount.Name);
+  }
+
+  @IsTest
+  static void testDeleteAccount() {
+    Account acc = new Account(Name = 'Account To Delete');
+
+    insert acc;
+
+    Test.startTest();
+
+    DevOpsAccountDmlService.deleteAccount(acc.Id);
+
+    Test.stopTest();
+
+    List<Account> accounts = [
+      SELECT Id
+      FROM Account
+      WHERE Id = :acc.Id
+    ];
+
+    System.assertEquals(0, accounts.size());
+  }
+
+  @IsTest
+  static void testUpsertNewAccount() {
+    Account acc = new Account(Name = 'Upsert New Account');
+
+    Test.startTest();
+
+    Account result = DevOpsAccountDmlService.upsertAccount(acc);
+
+    Test.stopTest();
+
+    System.assertNotEquals(null, result.Id);
+
+    System.assertEquals('Upsert New Account', result.Name);
+  }
+
+  @IsTest
+  static void testUpsertExistingAccount() {
+    Account acc = new Account(Name = 'Original Upsert Account');
+
+    insert acc;
+
+    acc.Name = 'Updated Upsert Account';
+
+    Test.startTest();
+
+    Account result = DevOpsAccountDmlService.upsertAccount(acc);
+
+    Test.stopTest();
+
+    System.assertEquals(acc.Id, result.Id);
+
+    System.assertEquals('Updated Upsert Account', result.Name);
+  }
+
+  @IsTest
+  static void testCreateAccountsBulk() {
+    List<String> accountNames = new List<String>();
+
+    for (Integer i = 1; i <= 200; i++) {
+      accountNames.add('Bulk Test Account ' + i);
     }
 
-    @IsTest
-    static void testUpdateAccount() {
+    Test.startTest();
 
-        Account acc = new Account(
-            Name = 'Original Account Name'
-        );
+    System.debug('DML statements before: ' + Limits.getDmlStatements());
 
-        insert acc;
+    System.debug('SOQL queries before: ' + Limits.getQueries());
 
-        Test.startTest();
+    List<Account> accounts = DevOpsAccountDmlService.createAccounts(
+      accountNames
+    );
 
-        Account updatedAccount =
-            DevOpsAccountDmlService.updateAccount(
-                acc.Id,
-                'Updated Account Name'
-            );
+    System.debug('DML statements after: ' + Limits.getDmlStatements());
 
-        Test.stopTest();
+    System.debug('SOQL queries after: ' + Limits.getQueries());
 
-        System.assertEquals(
-            'Updated Account Name',
-            updatedAccount.Name
-        );
+    System.assertEquals(
+      1,
+      Limits.getDmlStatements(),
+      'Bulk creation should use one DML statement'
+    );
+
+    System.assertEquals(
+      0,
+      Limits.getQueries(),
+      'Bulk creation should not use SOQL'
+    );
+
+    Test.stopTest();
+
+    System.assertEquals(200, accounts.size());
+
+    System.assertNotEquals(null, accounts[0].Id);
+  }
+
+  @IsTest
+  static void testGetContactsForAccounts() {
+    List<Account> accounts = new List<Account>();
+
+    for (Integer i = 1; i <= 3; i++) {
+      accounts.add(new Account(Name = 'Contact Test Account ' + i));
     }
 
-    @IsTest
-    static void testDeleteAccount() {
+    insert accounts;
 
-        Account acc = new Account(
-            Name = 'Account To Delete'
-        );
+    List<Contact> contactsToCreate = new List<Contact>();
 
-        insert acc;
-
-        Test.startTest();
-
-        DevOpsAccountDmlService.deleteAccount(acc.Id);
-
-        Test.stopTest();
-
-        List<Account> accounts = [
-            SELECT Id
-            FROM Account
-            WHERE Id = :acc.Id
-        ];
-
-        System.assertEquals(
-            0,
-            accounts.size()
-        );
+    for (Account acc : accounts) {
+      contactsToCreate.add(
+        new Contact(
+          FirstName = 'Test',
+          LastName = 'Contact',
+          AccountId = acc.Id
+        )
+      );
     }
 
-    @IsTest
-    static void testUpsertNewAccount() {
+    insert contactsToCreate;
 
-        Account acc = new Account(
-            Name = 'Upsert New Account'
-        );
+    Set<Id> accountIds = new Set<Id>();
 
-        Test.startTest();
-
-        Account result =
-            DevOpsAccountDmlService.upsertAccount(acc);
-
-        Test.stopTest();
-
-        System.assertNotEquals(
-            null,
-            result.Id
-        );
-
-        System.assertEquals(
-            'Upsert New Account',
-            result.Name
-        );
+    for (Account acc : accounts) {
+      accountIds.add(acc.Id);
     }
 
-    @IsTest
-    static void testUpsertExistingAccount() {
+    Test.startTest();
 
-        Account acc = new Account(
-            Name = 'Original Upsert Account'
-        );
+    List<Contact> contacts = DevOpsAccountDmlService.getContactsForAccounts(
+      accountIds
+    );
 
-        insert acc;
+    Test.stopTest();
 
-        acc.Name = 'Updated Upsert Account';
+    System.assertEquals(3, contacts.size());
 
-        Test.startTest();
+    for (Contact contact : contacts) {
+      System.assert(
+        accountIds.contains(contact.AccountId),
+        'Returned Contact belongs to an unexpected Account'
+      );
+    }
+  }
 
-        Account result =
-            DevOpsAccountDmlService.upsertAccount(acc);
+  @IsTest
+  static void testGetAccountMap() {
+    List<Account> accounts = new List<Account>();
 
-        Test.stopTest();
-
-        System.assertEquals(
-            acc.Id,
-            result.Id
-        );
-
-        System.assertEquals(
-            'Updated Upsert Account',
-            result.Name
-        );
+    for (Integer i = 1; i <= 3; i++) {
+      accounts.add(new Account(Name = 'Map Test Account ' + i));
     }
 
-    @IsTest
-    static void testCreateAccountsBulk() {
+    insert accounts;
 
-        List<String> accountNames = new List<String>();
+    Test.startTest();
 
-        for (Integer i = 1; i <= 200; i++) {
-            accountNames.add('Bulk Test Account ' + i);
-        }
+    Map<Id, Account> accountMap = DevOpsAccountDmlService.getAccountMap(
+      accounts
+    );
 
-        Test.startTest();
+    Test.stopTest();
 
-        System.debug(
-            'DML statements before: ' +
-            Limits.getDmlStatements()
-        );
+    System.assertEquals(3, accountMap.size());
 
-        System.debug(
-            'SOQL queries before: ' +
-            Limits.getQueries()
-        );
+    for (Account acc : accounts) {
+      System.assert(
+        accountMap.containsKey(acc.Id),
+        'Account Id should exist in the Map'
+      );
 
-        List<Account> accounts =
-            DevOpsAccountDmlService.createAccounts(accountNames);
-
-        System.debug(
-            'DML statements after: ' +
-            Limits.getDmlStatements()
-        );
-
-        System.debug(
-            'SOQL queries after: ' +
-            Limits.getQueries()
-        );
-
-        System.assertEquals(
-            1,
-            Limits.getDmlStatements(),
-            'Bulk creation should use one DML statement'
-        );
-
-        System.assertEquals(
-            0,
-            Limits.getQueries(),
-            'Bulk creation should not use SOQL'
-        );
-
-        Test.stopTest();
-
-        System.assertEquals(
-            200,
-            accounts.size()
-        );
-
-        System.assertNotEquals(
-            null,
-            accounts[0].Id
-        );
+      System.assertEquals(acc.Name, accountMap.get(acc.Id).Name);
     }
-
-    @IsTest
-    static void testGetContactsForAccounts() {
-
-        List<Account> accounts = new List<Account>();
-
-        for (Integer i = 1; i <= 3; i++) {
-            accounts.add(
-                new Account(
-                    Name = 'Contact Test Account ' + i
-                )
-            );
-        }
-
-        insert accounts;
-
-        List<Contact> contactsToCreate = new List<Contact>();
-
-        for (Account acc : accounts) {
-            contactsToCreate.add(
-                new Contact(
-                    FirstName = 'Test',
-                    LastName = 'Contact',
-                    AccountId = acc.Id
-                )
-            );
-        }
-
-        insert contactsToCreate;
-
-        List<Id> accountIds = new List<Id>();
-
-        for (Account acc : accounts) {
-            accountIds.add(acc.Id);
-        }
-
-        Test.startTest();
-
-        List<Contact> contacts =
-            DevOpsAccountDmlService.getContactsForAccounts(accountIds);
-
-        Test.stopTest();
-
-        System.assertEquals(
-            3,
-            contacts.size()
-        );
-
-        for (Contact contact : contacts) {
-            System.assert(
-                accountIds.contains(contact.AccountId),
-                'Returned Contact belongs to an unexpected Account'
-            );
-        }
-    }
+  }
 }

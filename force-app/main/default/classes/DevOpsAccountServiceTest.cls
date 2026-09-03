@@ -17,7 +17,7 @@ private class DevOpsAccountServiceTest {
         Test.startTest();
 
         List<Account> accounts =
-            DevOpsAccountService.getAccounts();
+            DevOpsAccountService.getAccounts('DevOps');
 
         Test.stopTest();
 

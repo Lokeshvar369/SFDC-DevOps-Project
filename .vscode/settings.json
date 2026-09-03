@@ -5,5 +5,12 @@
     "**/.sf": true,
     "**/.sfdx": true
   },
-  "xml.preferences.showSchemaDocumentationType": "none"
+  "xml.preferences.showSchemaDocumentationType": "none",
+
+  /* Prettier & Apex Formatting Settings */
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[apex]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

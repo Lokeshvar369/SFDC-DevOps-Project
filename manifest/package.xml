@@ -4,14 +4,6 @@
     <!-- Custom Objects -->
     <types>
         <members>Customer_Feedback__c</members>
-        <members>Detail__c</members>
-        <members>Login_Form__c</members>
-        <name>CustomObject</name>
-    </types>
-
-    <!-- Account custom field -->
-    <types>
-        <members>Customer_Feedback__c</members>
         <name>CustomObject</name>
     </types>
 

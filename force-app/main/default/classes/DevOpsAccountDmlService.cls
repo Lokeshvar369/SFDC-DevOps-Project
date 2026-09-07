@@ -105,6 +105,12 @@ public with sharing class DevOpsAccountDmlService {
     return contacts;
   }
 
+  /**
+   * Creates a Map of Account Ids to Account records.
+   *
+   * @param accounts Accounts to convert into a Map keyed by Id.
+   * @return Map containing the supplied Accounts keyed by their Id.
+   */
   public static Map<Id, Account> getAccountMap(List<Account> accounts) {
     Map<Id, Account> accountMap = new Map<Id, Account>();
 

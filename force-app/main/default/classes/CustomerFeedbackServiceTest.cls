@@ -17,6 +17,10 @@ private class CustomerFeedbackServiceTest {
       LIMIT 1
     ];
 
-    System.assertEquals('DevOps Service', savedFeedback.Name);
+    System.assertEquals(
+      'DevOps Service',
+      savedFeedback.Name,
+      'Verify that the Customer Feedback record retains the expected Name after insertion.'
+    );
   }
 }

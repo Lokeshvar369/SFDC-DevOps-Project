@@ -1,5 +1,5 @@
 @IsTest
-private class CustomerFeedbackTriggerTest {
+private class CustomerFeedbackServiceTest {
   @IsTest
   static void testCustomerFeedbackTrigger() {
     Customer_Feedback__c feedback = new Customer_Feedback__c();
@@ -17,6 +17,6 @@ private class CustomerFeedbackTriggerTest {
       LIMIT 1
     ];
 
-    System.assertEquals('DevOps Trigger Test', savedFeedback.Name);
+    System.assertEquals('DevOps Service', savedFeedback.Name);
   }
 }

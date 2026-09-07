@@ -178,9 +178,11 @@ private class DevOpsAccountDmlServiceTest {
 
     insert accounts;
 
-    List<Contact> contacts = DevOpsTestDataFactory.createContacts(accounts);
+    List<Contact> contactsToCreate = DevOpsTestDataFactory.createContacts(
+      accounts
+    );
 
-    insert contacts;
+    insert contactsToCreate;
 
     Set<Id> accountIds = new Set<Id>();
 
@@ -190,7 +192,7 @@ private class DevOpsAccountDmlServiceTest {
 
     Test.startTest();
 
-    List<Contact> contacts = DevOpsAccountDmlService.getContactsForAccounts(
+    List<Contact> returnedContacts = DevOpsAccountDmlService.getContactsForAccounts(
       accountIds
     );
 
@@ -198,11 +200,11 @@ private class DevOpsAccountDmlServiceTest {
 
     System.assertEquals(
       3,
-      contacts.size(),
+      returnedContacts.size(),
       'Service should return all three Contacts associated with the test Accounts'
     );
 
-    for (Contact contact : contacts) {
+    for (Contact contact : returnedContacts) {
       System.assert(
         accountIds.contains(contact.AccountId),
         'Returned Contact belongs to an unexpected Account'

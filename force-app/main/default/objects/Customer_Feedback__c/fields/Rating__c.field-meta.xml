@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Feedback_Status__c</fullName>
-    <description>Indicates the current status of the customer feedback record. Values include New, In Review, and Closed</description>
-    <label>Feedback Status</label>
+    <fullName>Rating__c</fullName>
+    <label>Rating</label>
     <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
@@ -11,19 +10,29 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>New</fullName>
+                <fullName>1</fullName>
                 <default>false</default>
-                <label>New</label>
+                <label>1</label>
             </value>
             <value>
-                <fullName>In Review</fullName>
+                <fullName>2</fullName>
                 <default>false</default>
-                <label>In Review</label>
+                <label>2</label>
             </value>
             <value>
-                <fullName>Closed</fullName>
+                <fullName>3</fullName>
                 <default>false</default>
-                <label>Closed</label>
+                <label>3</label>
+            </value>
+            <value>
+                <fullName>4</fullName>
+                <default>false</default>
+                <label>4</label>
+            </value>
+            <value>
+                <fullName>5</fullName>
+                <default>false</default>
+                <label>5</label>
             </value>
         </valueSetDefinition>
     </valueSet>

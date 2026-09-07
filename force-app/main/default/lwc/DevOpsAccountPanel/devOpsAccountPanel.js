@@ -1,7 +1,3 @@
-import { LightningElement, wire } from "lwc";
-import getAccounts from "@salesforce/apex/DevOpsAccountService.getAccounts";
+import { LightningElement } from "lwc";
 
-export default class DevOpsAccountPanel extends LightningElement {
-  @wire(getAccounts, { accountName: "" })
-  accounts;
-}
+export default class DevOpsAccountPanel extends LightningElement {}

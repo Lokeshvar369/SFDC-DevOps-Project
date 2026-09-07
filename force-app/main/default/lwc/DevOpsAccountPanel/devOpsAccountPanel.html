@@ -1,11 +1,7 @@
 <template>
-  <lightning-card title="DevOps Accounts">
+  <lightning-card title="DevOps Account Panel">
     <div class="slds-p-around_medium">
-      <template if:true={accounts.data}>
-        <template for:each={accounts.data} for:item="account">
-          <p key={account.Id}>{account.Name}</p>
-        </template>
-      </template>
+      <p>Hello from the DevOps LWC!</p>
     </div>
   </lightning-card>
 </template>

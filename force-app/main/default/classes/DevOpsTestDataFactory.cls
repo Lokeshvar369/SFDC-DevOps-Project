@@ -43,4 +43,20 @@ public class DevOpsTestDataFactory {
       AccountId = accountId
     );
   }
+
+  /**
+   * Creates Contacts for a list of Accounts.
+   *
+   * @param accounts Accounts to associate with the Contacts.
+   * @return A list of unsaved Contact records.
+   */
+  public static List<Contact> createContacts(List<Account> accounts) {
+    List<Contact> contacts = new List<Contact>();
+
+    for (Account acc : accounts) {
+      contacts.add(createContact(acc.Id));
+    }
+
+    return contacts;
+  }
 }

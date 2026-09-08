@@ -1,7 +1,7 @@
 @IsTest
 private class CustomerFeedbackServiceTest {
   private class CustomerFeedbackTestDataFactory {
-    static Customer_Feedback__c buildCustomerFeedback() {
+    Customer_Feedback__c buildCustomerFeedback() {
       // Add required fields here if validation rules change.
       return new Customer_Feedback__c();
     }
@@ -9,7 +9,9 @@ private class CustomerFeedbackServiceTest {
 
   @IsTest
   static void testCustomerFeedbackTrigger() {
-    Customer_Feedback__c feedback = CustomerFeedbackTestDataFactory.buildCustomerFeedback();
+    CustomerFeedbackTestDataFactory dataFactory = new CustomerFeedbackTestDataFactory();
+
+    Customer_Feedback__c feedback = dataFactory.buildCustomerFeedback();
 
     Test.startTest();
     insert feedback;

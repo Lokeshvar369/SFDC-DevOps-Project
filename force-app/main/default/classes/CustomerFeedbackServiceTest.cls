@@ -2,12 +2,10 @@
 private class CustomerFeedbackServiceTest {
   @IsTest
   static void testCustomerFeedbackTrigger() {
-    Customer_Feedback__c feedback = new Customer_Feedback__c();
+    Customer_Feedback__c feedback = CustomerFeedbackTestDataFactory.buildCustomerFeedback();
 
     Test.startTest();
-
     insert feedback;
-
     Test.stopTest();
 
     Customer_Feedback__c savedFeedback = [

@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Rating__c</fullName>
     <label>Rating</label>
+    <description>Indicates the rating on a scale of 1 to 5.</description>
     <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>

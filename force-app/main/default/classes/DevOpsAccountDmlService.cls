@@ -3,6 +3,12 @@
  */
 public with sharing class DevOpsAccountDmlService {
   /**
+   * Thrown when an Account insert fails.
+   */
+  public class AccountInsertException extends Exception {
+  }
+
+  /**
    * Thrown when an Account update fails.
    */
   public class AccountUpdateException extends Exception {
@@ -12,6 +18,12 @@ public with sharing class DevOpsAccountDmlService {
    * Thrown when an Account deletion fails.
    */
   public class AccountDeleteException extends Exception {
+  }
+
+  /**
+   * Thrown when an Account upsert fails.
+   */
+  public class AccountUpsertException extends Exception {
   }
 
   /**
@@ -25,11 +37,18 @@ public with sharing class DevOpsAccountDmlService {
    *
    * @param accountName Name of the Account to create.
    * @return The newly created Account.
+   * @throws AccountInsertException If the Account insert fails.
    */
   public static Account createAccount(String accountName) {
     Account acc = new Account(Name = accountName);
 
-    Database.insert(acc, AccessLevel.USER_MODE);
+    try {
+      Database.insert(acc, AccessLevel.USER_MODE);
+    } catch (DmlException e) {
+      throw new AccountInsertException(
+        'Unable to create Account: ' + e.getMessage()
+      );
+    }
 
     return acc;
   }
@@ -93,9 +112,16 @@ public with sharing class DevOpsAccountDmlService {
    *
    * @param accountRecord Account record to insert or update.
    * @return The inserted or updated Account.
+   * @throws AccountUpsertException If the Account upsert fails.
    */
   public static Account upsertAccount(Account accountRecord) {
-    Database.upsert(accountRecord, AccessLevel.USER_MODE);
+    try {
+      Database.upsert(accountRecord, AccessLevel.USER_MODE);
+    } catch (DmlException e) {
+      throw new AccountUpsertException(
+        'Unable to upsert Account: ' + e.getMessage()
+      );
+    }
 
     return accountRecord;
   }

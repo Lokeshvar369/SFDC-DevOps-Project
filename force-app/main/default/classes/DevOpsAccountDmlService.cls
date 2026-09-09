@@ -15,6 +15,12 @@ public with sharing class DevOpsAccountDmlService {
   }
 
   /**
+   * Thrown when a bulk Account insert fails.
+   */
+  public class AccountBulkInsertException extends Exception {
+  }
+
+  /**
    * Creates an Account with the supplied name.
    *
    * @param accountName Name of the Account to create.
@@ -99,6 +105,7 @@ public with sharing class DevOpsAccountDmlService {
    *
    * @param accountNames Names for the Accounts to create.
    * @return The newly created Accounts.
+   * @throws AccountBulkInsertException If the bulk Account insert fails.
    */
   public static List<Account> createAccounts(List<String> accountNames) {
     List<Account> accounts = new List<Account>();
@@ -108,7 +115,13 @@ public with sharing class DevOpsAccountDmlService {
       accounts.add(acc);
     }
 
-    Database.insert(accounts, AccessLevel.USER_MODE);
+    try {
+      Database.insert(accounts, AccessLevel.USER_MODE);
+    } catch (DmlException e) {
+      throw new AccountBulkInsertException(
+        'Unable to create Accounts: ' + e.getMessage()
+      );
+    }
 
     return accounts;
   }

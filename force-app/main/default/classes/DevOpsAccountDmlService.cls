@@ -2,7 +2,16 @@
  * Provides Account DML operations and bulkified Account/Contact access examples.
  */
 public with sharing class DevOpsAccountDmlService {
+  /**
+   * Thrown when an Account update fails.
+   */
   public class AccountUpdateException extends Exception {
+  }
+
+  /**
+   * Thrown when an Account deletion fails.
+   */
+  public class AccountDeleteException extends Exception {
   }
 
   /**
@@ -25,6 +34,7 @@ public with sharing class DevOpsAccountDmlService {
    * @param accountId Id of the Account to update.
    * @param newName New Account name.
    * @return The updated Account.
+   * @throws AccountUpdateException If the Account update fails.
    */
   public static Account updateAccount(Id accountId, String newName) {
     Account acc = [
@@ -52,6 +62,7 @@ public with sharing class DevOpsAccountDmlService {
    * Deletes an Account by Id.
    *
    * @param accountId Id of the Account to delete.
+   * @throws AccountDeleteException If the Account deletion fails.
    */
   public static void deleteAccount(Id accountId) {
     Account acc = [
@@ -62,7 +73,13 @@ public with sharing class DevOpsAccountDmlService {
       LIMIT 1
     ];
 
-    Database.delete(acc, AccessLevel.USER_MODE);
+    try {
+      Database.delete(acc, AccessLevel.USER_MODE);
+    } catch (DmlException e) {
+      throw new AccountDeleteException(
+        'Unable to delete Account ' + accountId + ': ' + e.getMessage()
+      );
+    }
   }
 
   /**

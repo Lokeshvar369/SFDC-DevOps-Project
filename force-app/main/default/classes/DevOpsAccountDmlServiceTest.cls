@@ -8,14 +8,22 @@ private class DevOpsAccountDmlServiceTest {
 
     Test.stopTest();
 
-    System.assertNotEquals(null, acc.Id);
+    System.assertNotEquals(
+      null,
+      acc.Id,
+      'Created Account should have a Salesforce Id'
+    );
 
-    System.assertEquals('Gearset Demo Account', acc.Name);
+    System.assertEquals(
+      'Gearset Demo Account',
+      acc.Name,
+      'Created Account should retain the name supplied to the service'
+    );
   }
 
   @IsTest
   static void testUpdateAccount() {
-    Account acc = new Account(Name = 'Original Account Name');
+    Account acc = DevOpsTestDataFactory.createAccount('Original Account Name');
 
     insert acc;
 
@@ -28,12 +36,16 @@ private class DevOpsAccountDmlServiceTest {
 
     Test.stopTest();
 
-    System.assertEquals('Updated Account Name', updatedAccount.Name);
+    System.assertEquals(
+      'Updated Account Name',
+      updatedAccount.Name,
+      'Updated Account should contain the new name supplied to the update service'
+    );
   }
 
   @IsTest
   static void testDeleteAccount() {
-    Account acc = new Account(Name = 'Account To Delete');
+    Account acc = DevOpsTestDataFactory.createAccount('Account To Delete');
 
     insert acc;
 
@@ -49,12 +61,16 @@ private class DevOpsAccountDmlServiceTest {
       WHERE Id = :acc.Id
     ];
 
-    System.assertEquals(0, accounts.size());
+    System.assertEquals(
+      0,
+      accounts.size(),
+      'Deleted Account should no longer be returned by the query'
+    );
   }
 
   @IsTest
   static void testUpsertNewAccount() {
-    Account acc = new Account(Name = 'Upsert New Account');
+    Account acc = DevOpsTestDataFactory.createAccount('Upsert New Account');
 
     Test.startTest();
 
@@ -62,14 +78,24 @@ private class DevOpsAccountDmlServiceTest {
 
     Test.stopTest();
 
-    System.assertNotEquals(null, result.Id);
+    System.assertNotEquals(
+      null,
+      result.Id,
+      'Upserted new Account should have a Salesforce Id'
+    );
 
-    System.assertEquals('Upsert New Account', result.Name);
+    System.assertEquals(
+      'Upsert New Account',
+      result.Name,
+      'Newly upserted Account should retain the supplied name'
+    );
   }
 
   @IsTest
   static void testUpsertExistingAccount() {
-    Account acc = new Account(Name = 'Original Upsert Account');
+    Account acc = DevOpsTestDataFactory.createAccount(
+      'Original Upsert Account'
+    );
 
     insert acc;
 
@@ -81,9 +107,17 @@ private class DevOpsAccountDmlServiceTest {
 
     Test.stopTest();
 
-    System.assertEquals(acc.Id, result.Id);
+    System.assertEquals(
+      acc.Id,
+      result.Id,
+      'Upsert should update the existing Account instead of creating a new record'
+    );
 
-    System.assertEquals('Updated Upsert Account', result.Name);
+    System.assertEquals(
+      'Updated Upsert Account',
+      result.Name,
+      'Existing Account should contain the updated name after upsert'
+    );
   }
 
   @IsTest
@@ -122,32 +156,31 @@ private class DevOpsAccountDmlServiceTest {
 
     Test.stopTest();
 
-    System.assertEquals(200, accounts.size());
+    System.assertEquals(
+      200,
+      accounts.size(),
+      'Bulk creation should return all 200 requested Accounts'
+    );
 
-    System.assertNotEquals(null, accounts[0].Id);
+    System.assertNotEquals(
+      null,
+      accounts[0].Id,
+      'Bulk-created Accounts should receive Salesforce record Ids'
+    );
   }
 
   @IsTest
   static void testGetContactsForAccounts() {
-    List<Account> accounts = new List<Account>();
-
-    for (Integer i = 1; i <= 3; i++) {
-      accounts.add(new Account(Name = 'Contact Test Account ' + i));
-    }
+    List<Account> accounts = DevOpsTestDataFactory.createAccounts(
+      3,
+      'Contact Test Account'
+    );
 
     insert accounts;
 
-    List<Contact> contactsToCreate = new List<Contact>();
-
-    for (Account acc : accounts) {
-      contactsToCreate.add(
-        new Contact(
-          FirstName = 'Test',
-          LastName = 'Contact',
-          AccountId = acc.Id
-        )
-      );
-    }
+    List<Contact> contactsToCreate = DevOpsTestDataFactory.createContacts(
+      accounts
+    );
 
     insert contactsToCreate;
 
@@ -159,15 +192,19 @@ private class DevOpsAccountDmlServiceTest {
 
     Test.startTest();
 
-    List<Contact> contacts = DevOpsAccountDmlService.getContactsForAccounts(
+    List<Contact> returnedContacts = DevOpsAccountDmlService.getContactsForAccounts(
       accountIds
     );
 
     Test.stopTest();
 
-    System.assertEquals(3, contacts.size());
+    System.assertEquals(
+      3,
+      returnedContacts.size(),
+      'Service should return all three Contacts associated with the test Accounts'
+    );
 
-    for (Contact contact : contacts) {
+    for (Contact contact : returnedContacts) {
       System.assert(
         accountIds.contains(contact.AccountId),
         'Returned Contact belongs to an unexpected Account'
@@ -177,11 +214,10 @@ private class DevOpsAccountDmlServiceTest {
 
   @IsTest
   static void testGetAccountMap() {
-    List<Account> accounts = new List<Account>();
-
-    for (Integer i = 1; i <= 3; i++) {
-      accounts.add(new Account(Name = 'Map Test Account ' + i));
-    }
+    List<Account> accounts = DevOpsTestDataFactory.createAccounts(
+      3,
+      'Map Test Account'
+    );
 
     insert accounts;
 
@@ -193,7 +229,11 @@ private class DevOpsAccountDmlServiceTest {
 
     Test.stopTest();
 
-    System.assertEquals(3, accountMap.size());
+    System.assertEquals(
+      3,
+      accountMap.size(),
+      'Account Map should contain one entry for each supplied Account'
+    );
 
     for (Account acc : accounts) {
       System.assert(
@@ -201,7 +241,11 @@ private class DevOpsAccountDmlServiceTest {
         'Account Id should exist in the Map'
       );
 
-      System.assertEquals(acc.Name, accountMap.get(acc.Id).Name);
+      System.assertEquals(
+        acc.Name,
+        accountMap.get(acc.Id).Name,
+        'Account Map should return the correct Account for each Id'
+      );
     }
   }
 }

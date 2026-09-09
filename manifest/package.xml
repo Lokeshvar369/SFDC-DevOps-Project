@@ -10,13 +10,15 @@
     <!-- Apex Classes -->
     <types>
         <members>CustomerFeedbackService</members>
-        <members>CustomerFeedbackServiceTest</members>
+        <members>CustomerFeedbackTriggerTest</members>
         <members>DevOpsAccountService</members>
         <members>DevOpsAccountServiceTest</members>
         <members>DevOpsAccountDmlService</members>
         <members>DevOpsAccountDmlServiceTest</members>
         <members>DevOpsDemoService</members>
         <members>DevOpsDemoServiceTest</members>
+        <members>DevOpsAccountTriggerHandler</members>
+        <members>DevOpsTestDataFactory</members>
         <name>ApexClass</name>
     </types>
 

@@ -2,6 +2,9 @@
  * Provides Account DML operations and bulkified Account/Contact access examples.
  */
 public with sharing class DevOpsAccountDmlService {
+  public class AccountUpdateException extends Exception {
+  }
+
   /**
    * Creates an Account with the supplied name.
    *
@@ -34,7 +37,13 @@ public with sharing class DevOpsAccountDmlService {
 
     acc.Name = newName;
 
-    Database.update(acc, AccessLevel.USER_MODE);
+    try {
+      Database.update(acc, AccessLevel.USER_MODE);
+    } catch (DmlException e) {
+      throw new AccountUpdateException(
+        'Unable to update Account ' + accountId + ': ' + e.getMessage()
+      );
+    }
 
     return acc;
   }
@@ -79,7 +88,6 @@ public with sharing class DevOpsAccountDmlService {
 
     for (String accountName : accountNames) {
       Account acc = new Account(Name = accountName);
-
       accounts.add(acc);
     }
 
@@ -95,16 +103,20 @@ public with sharing class DevOpsAccountDmlService {
    * @return Contacts related to the supplied Accounts.
    */
   public static List<Contact> getContactsForAccounts(Set<Id> accountIds) {
-    List<Contact> contacts = [
+    return [
       SELECT Id, Name, AccountId
       FROM Contact
       WHERE AccountId IN :accountIds
       WITH USER_MODE
     ];
-
-    return contacts;
   }
 
+  /**
+   * Creates a Map of Account Ids to Account records.
+   *
+   * @param accounts Accounts to convert into a Map keyed by Id.
+   * @return Map containing the supplied Accounts keyed by their Id.
+   */
   public static Map<Id, Account> getAccountMap(List<Account> accounts) {
     Map<Id, Account> accountMap = new Map<Id, Account>();
 

@@ -1,17 +1,14 @@
+/**
+ * Tests Customer Feedback automation.
+ */
 @IsTest
 private class CustomerFeedbackServiceTest {
-  private class CustomerFeedbackTestDataFactory {
-    Customer_Feedback__c buildCustomerFeedback() {
-      // Add required fields here if validation rules change.
-      return new Customer_Feedback__c();
-    }
-  }
-
+  /**
+   * Verifies the Customer Feedback trigger assigns the expected Name.
+   */
   @IsTest
   static void testCustomerFeedbackTrigger() {
-    CustomerFeedbackTestDataFactory dataFactory = new CustomerFeedbackTestDataFactory();
-
-    Customer_Feedback__c feedback = dataFactory.buildCustomerFeedback();
+    Customer_Feedback__c feedback = CustomerFeedbackTestDataFactory.buildCustomerFeedback();
 
     Test.startTest();
     insert feedback;
